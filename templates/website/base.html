@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="{% block meta_description %}Skybound Academy: парашютные прыжки и лётная подготовка.{% endblock %}" />
+    <title>{% block title %}Skybound Academy — Где Земля встречается с небом{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components.css' %}" />
+
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation (взято из твоего index) -->
+    <nav class="main-nav" role="navigation" aria-label="Основная навигация">
+        <div class="nav-container">
+            <div class="logo">Skybound Academy</div>
+            <button class="mobile-menu-toggle" aria-label="Открыть меню" aria-controls="primary-navigation" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul id="primary-navigation" class="nav-menu">
+                <li><a href="{% url 'home' %}">Главная</a></li>
+                <li><a href="{% url 'about' %}">О нас</a></li>
+                <li><a href="{% url 'programs' %}">Программы</a></li>
+                <li><a href="{% url 'pricing' %}">Цены</a></li>
+                <li><a href="{% url 'contact' %}">Контакты</a></li>
+                <li><a href="#gallery">Галерея</a></li>
+                <li><a href="{% url 'pricing' %}#pricing" class="cta-nav">Записаться</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer (взято из index) -->
+    <footer class="main-footer">
+        <div class="container">
+            <nav class="footer-nav">
+                <a href="{% url 'about' %}">О нас</a>
+                <a href="{% url 'about' %}#safety">Показатели безопасности</a>
+                <a href="{% url 'about' %}#instructors">Инструкторы</a>
+                <a href="{% url 'about' %}#fleet">Парк</a>
+                <a href="{% url 'contact' %}">Контакты</a>
+            </nav>
+            <p>&copy; 2025 Skybound Academy. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- Exit-intent Popup (оставляем общим) -->
+    <div class="popup" id="exitPopup" role="dialog" aria-modal="true" aria-labelledby="exitPopupTitle">
+        <div class="popup-content">
+            <button class="close-popup" aria-label="Закрыть окно">&times;</button>
+            <h3 id="exitPopupTitle">Подождите! Скидка $25 на первый опыт</h3>
+            <p>Оставьте e-mail — мгновенно пришлём промокод.</p>
+            <form id="popupForm">
+                <label for="popupEmail" class="sr-only">Адрес электронной почты</label>
+                <input id="popupEmail" type="email" placeholder="Введите e-mail" required aria-label="Адрес электронной почты" />
+                <button type="submit" class="btn btn-primary">Получить скидку</button>
+            </form>
+        </div>
+    </div>
+
+    {% block extra_scripts %}{% endblock %}
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

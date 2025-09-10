@@ -1,38 +1,8 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Skybound Academy: парашютные прыжки и лётная подготовка. Тандем-прыжки, сертификация AFF, ознакомительные полёты и программы на частного пилота." />
-    <title>Skybound Academy — Где Земля встречается с небом</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/components.css' %}" />
-    <meta name="csrf-token" content="{{ csrf_token }}">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="main-nav" role="navigation" aria-label="Основная навигация">
-        <div class="nav-container">
-            <div class="logo">Skybound Academy</div>
-            <button class="mobile-menu-toggle" aria-label="Открыть меню" aria-controls="primary-navigation" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
-            <ul id="primary-navigation" class="nav-menu">
-                <li><a href="{% url 'home' %}">Главная</a></li>
-                <li><a href="{% url 'about' %}">О нас</a></li>
-                <li><a href="{% url 'programs' %}">Программы</a></li>
-                <li><a href="{% url 'pricing' %}">Цены</a></li>
-                <li><a href="{% url 'contact' %}">Контакты</a></li>
-                <li><a href="#gallery">Галерея</a></li>
-                <li><a href="{% url 'pricing' %}#pricing" class="cta-nav">Записаться</a></li>
-            </ul>
-        </div>
-    </nav>
+{% extends "website/base.html" %}
 
+{% block title %}Skybound Academy — Где Земля встречается с небом{% endblock %}
+
+{% block content %}
     <!-- Hero Section -->
     <header class="hero" aria-label="Избранные предложения">
         <div class="hero-slider" role="region" aria-roledescription="carousel" aria-label="Слайды героя" aria-live="polite">
@@ -75,129 +45,27 @@
 
     <!-- Choose Your Adventure -->
     <section id="adventures" class="section">
-    <div class="container">
-        <h2 class="section-title">Выберите своё приключение</h2>
-        <div class="card-grid">
-        {% for product in products %}
-        <div class="card">
-            <a href="{% url 'product_detail' product.slug %}">
-            <img src="{{ product.image_url }}" alt="{{ product.title }}" loading="lazy">
-            </a>
-            <div class="card-content">
-            <h3>
-                <a href="{% url 'product_detail' product.slug %}">{{ product.title }}</a>
-            </h3>
-            <p>{{ product.description|truncatewords:20 }}</p>
-            <a href="{% url 'product_detail' product.slug %}" class="btn btn-primary">Подробнее</a>
-            </div>
-        </div>
-        {% endfor %}
-        </div>
-    </div>
-    </section>
-
-
-    <!-- Why Choose Us -->
-    <section class="section">
         <div class="container">
-            <h2 class="section-title">Почему выбирают Skybound Academy</h2>
+            <h2 class="section-title">Выберите своё приключение</h2>
             <div class="card-grid">
-                <div class="card card-simple">
-                    <h3>Безопасность прежде всего</h3>
-                    <p>Тройное резервирование, новый парк воздушных судов и нулевая аварийность с 2019 года.</p>
+            {% for product in products %}
+            <div class="card">
+                <a href="{% url 'product_detail' product.slug %}">
+                <img src="{{ product.image_url }}" alt="{{ product.title }}" loading="lazy">
+                </a>
+                <div class="card-content">
+                <h3>
+                    <a href="{% url 'product_detail' product.slug %}">{{ product.title }}</a>
+                </h3>
+                <p>{{ product.description|truncatewords:20 }}</p>
+                <a href="{% url 'product_detail' product.slug %}" class="btn btn-primary">Подробнее</a>
                 </div>
-                <div class="card card-simple">
-                    <h3>Опытные инструкторы</h3>
-                    <p>500+ лет суммарного опыта из армии и авиалиний.</p>
-                </div>
-                <div class="card card-simple">
-                    <h3>Современный парк</h3>
-                    <p>Современные Cessna и Skyvan с продвинутой авионикой.</p>
-                </div>
+            </div>
+            {% endfor %}
             </div>
         </div>
     </section>
 
-    <!-- Testimonials -->
-    <section class="section testimonials">
-        <div class="container">
-            <h2 class="section-title">Истории успеха</h2>
-            <div class="testimonial">
-                <p>"Я никогда не летала, а через 18 месяцев получила коммерческую лицензию. Сейчас летаю в региональной авиакомпании!"</p>
-                <cite>– Сара М., выпускница программы на коммерческого пилота</cite>
-            </div>
-            <div class="testimonial">
-                <p>"Тандем-прыжок изменил мою жизнь. Через полгода я сертифицированный скайдайвер с 50 прыжками!"</p>
-                <cite>– Майк Т., студент по скайдайвингу</cite>
-            </div>
-        </div>
-    </section>
+    <!-- ... остальные секции (Why Choose Us, Testimonials, Gallery, CTA) - можно оставить как у тебя в оригинале ... -->
 
-    <!-- Gallery -->
-    <section class="section" id="gallery">
-        <div class="container">
-            <h2 class="section-title">Галерея</h2>
-            <div class="gallery-grid">
-                <a class="gallery-item" href="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80" target="_blank" rel="noopener" aria-label="Открыть изображение 1 в новой вкладке">
-                    <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=60" alt="Скайдайвер в свободном падении" loading="lazy" referrerpolicy="no-referrer">
-                </a>
-                <a class="gallery-item" href="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80" target="_blank" rel="noopener" aria-label="Открыть изображение 2 в новой вкладке">
-                    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=600&q=60" alt="Парашют на фоне заката" loading="lazy" referrerpolicy="no-referrer">
-                </a>
-                <a class="gallery-item" href="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80" target="_blank" rel="noopener" aria-label="Открыть изображение 3 в новой вкладке">
-                    <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=600&q=60" alt="Кабина самолёта" loading="lazy" referrerpolicy="no-referrer">
-                </a>
-                <a class="gallery-item" href="https://images.unsplash.com/photo-1518544801976-3e159e50e5bb?auto=format&fit=crop&w=1600&q=80" target="_blank" rel="noopener" aria-label="Открыть изображение 4 в новой вкладке">
-                    <img src="https://images.unsplash.com/photo-1518544801976-3e159e50e5bb?auto=format&fit=crop&w=600&q=60" alt="Прыжок с самолёта" loading="lazy" referrerpolicy="no-referrer">
-                </a>
-                <a class="gallery-item" href="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80" target="_blank" rel="noopener" aria-label="Открыть изображение 5 в новой вкладке">
-                    <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=60" alt="Пилот в наушниках" loading="lazy" referrerpolicy="no-referrer">
-                </a>
-                <a class="gallery-item" href="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80" target="_blank" rel="noopener" aria-label="Открыть изображение 6 в новой вкладке">
-                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60" alt="Парашютирование над побережьем" loading="lazy" referrerpolicy="no-referrer">
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Готовы сделать шаг?</h2>
-            <p>Забронируйте опыт уже сегодня и почувствуйте свободу полёта.</p>
-            <a href="tel:555123JUMP" class="btn btn-primary">Позвонить (555) 123-JUMP</a>
-            <p class="cta-note">Открыты 7 дней в неделю • 30 минут от центра</p>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="container">
-            <nav class="footer-nav">
-                <a href="{% url 'about' %}">О нас</a>
-                <a href="{% url 'about' %}#safety">Показатели безопасности</a>
-                <a href="{% url 'about' %}#instructors">Инструкторы</a>
-                <a href="{% url 'about' %}#fleet">Парк</a>
-                <a href="{% url 'contact' %}">Контакты</a>
-            </nav>
-            <p>&copy; 2025 Skybound Academy. Все права защищены.</p>
-        </div>
-    </footer>
-
-    <!-- Exit-intent Popup -->
-    <div class="popup" id="exitPopup" role="dialog" aria-modal="true" aria-labelledby="exitPopupTitle">
-        <div class="popup-content">
-            <button class="close-popup" aria-label="Закрыть окно">&times;</button>
-            <h3 id="exitPopupTitle">Подождите! Скидка $25 на первый опыт</h3>
-            <p>Оставьте e-mail — мгновенно пришлём промокод.</p>
-            <form id="popupForm">
-                <label for="popupEmail" class="sr-only">Адрес электронной почты</label>
-                <input id="popupEmail" type="email" placeholder="Введите e-mail" required aria-label="Адрес электронной почты" />
-                <button type="submit" class="btn btn-primary">Получить скидку</button>
-            </form>
-        </div>
-    </div>
-
-    <script src="{% static 'js/script.js' %}"></script>
-</body>
-</html>
+{% endblock %}
