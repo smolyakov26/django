@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ title }} — Skybound</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+</head>
+<body class="section">
+  <div class="container">
+    <p><a href="{% url 'home' %}">← На главную</a></p>
+    <h1 class="section-title">{{ title }}</h1>
+    <p>Страница в разработке.</p>
+  </div>
+</body>
+</html>
+

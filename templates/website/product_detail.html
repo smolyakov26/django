@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ product.meta_title }} | Skybound Academy</title>
+  <meta name="description" content="{{ product.meta_description }}">
+  <meta name="keywords" content="{{ product.keywords }}">
+
+  <!-- OpenGraph -->
+  <meta property="og:title" content="{{ product.meta_title }}">
+  <meta property="og:description" content="{{ product.meta_description }}">
+  <meta property="og:image" content="{{ product.image_url }}">
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="main-nav">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="logo">Skybound Academy</a>
+      <ul class="nav-menu">
+        <li><a href="{% url 'home' %}">Главная</a></li>
+        <li><a href="{% url 'programs' %}">Программы</a></li>
+        <li><a href="{% url 'pricing' %}">Цены</a></li>
+        <li><a href="{% url 'contact' %}">Контакты</a></li>
+      </ul>
+    </div>
+  </nav>
+
+<!-- Hero Section -->
+  <header class="hero" aria-label="Избранные предложения">
+      <div class="hero-slider" role="region" aria-roledescription="carousel" aria-label="Слайды героя" aria-live="polite">
+          <div class="hero-slide is-active" data-hero-slide="0" aria-hidden="false" style="--bg:url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1350&q=80')">
+              <div class="hero-content">
+                  <h1>Ощути настоящую свободу</h1>
+                  <p>С 4000 метров или из кабины — ваше путешествие начинается здесь.</p>
+                  <a href="{% url 'programs' %}" class="btn btn-primary">Начать приключение сегодня</a>
+              </div>
+          </div>
+          <div class="hero-slide" data-hero-slide="1" aria-hidden="true" style="--bg:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1350&q=80')">
+              <div class="hero-content">
+                  <h1>Accelerated Freefall (AFF)</h1>
+                  <p>От нуля до сертификата за 7 уровней с опытными инструкторами.</p>
+                  <a href="{% url 'pricing' %}#aff" class="btn btn-primary">Начать AFF</a>
+              </div>
+          </div>
+          <div class="hero-slide" data-hero-slide="2" aria-hidden="true" style="--bg:url('https://images.unsplash.com/photo-1559060017-445fb9722f2a?auto=format&fit=crop&w=1350&q=80')">
+              <div class="hero-content">
+                  <h1>Ознакомительный полёт</h1>
+                  <p>Возьмите управление под присмотром сертифицированного инструктора.</p>
+                  <a href="{% url 'pricing' %}#discovery" class="btn btn-primary">Записаться на полёт</a>
+              </div>
+          </div>
+          <button class="hero-control prev" aria-label="Предыдущий слайд">&#10094;</button>
+          <button class="hero-control next" aria-label="Следующий слайд">&#10095;</button>
+          <div class="hero-dots" role="tablist" aria-label="Выбор слайда"></div>
+      </div>
+  </header>
+
+  <!-- Product Content -->
+  <section class="section">
+    <div class="container">
+      <div class="card card-simple">
+        <h2>Описание программы</h2>
+        <p>{{ product.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Готовы попробовать {{ product.title }}?</h2>
+      <a href="{{ product.button_link }}" class="btn btn-primary">{{ product.button_text }}</a>
+      <p class="cta-note">Ограниченные места • Забронируйте заранее</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <p>&copy; 2025 Skybound Academy. Все права защищены.</p>
+    </div>
+  </footer>
+</body>
+</html>
