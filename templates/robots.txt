@@ -1,0 +1,32 @@
+User-agent: *
+Disallow:
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml
+
+# Disallow admin and API endpoints from crawling
+Disallow: /admin/
+Disallow: /api/
+
+# Allow static files
+Allow: /static/
+
+# Crawl delay (optional - adjust based on server capacity)
+Crawl-delay: 1
+
+# Specific rules for different bots (optional)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Block bad bots (optional)
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

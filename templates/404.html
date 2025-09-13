@@ -1,0 +1,118 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Страница не найдена — Skybound Academy{% endblock %}
+{% block meta_description %}Запрашиваемая страница не найдена. Вернитесь на главную страницу Skybound Academy.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <div class="error-illustration mb-4">
+                <i class="bi bi-exclamation-triangle display-1 text-warning" aria-hidden="true"></i>
+            </div>
+            
+            <h1 class="display-1 fw-bold text-primary mb-3">404</h1>
+            <h2 class="h3 fw-bold mb-4">Страница не найдена</h2>
+            
+            <div class="alert alert-warning d-inline-block mb-4">
+                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                К сожалению, запрашиваемая страница не существует или была перемещена
+            </div>
+            
+            <p class="lead text-muted mb-5">
+                Возможно, вы перешли по устаревшей ссылке или допустили ошибку в адресе.
+                Не волнуйтесь — мы поможем вам найти то, что вы ищете!
+            </p>
+            
+            <!-- Search Form -->
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-search me-2 text-primary" aria-hidden="true"></i>
+                        Поиск по сайту
+                    </h5>
+                    <form class="row g-2 justify-content-center">
+                        {% csrf_token %}
+                        <div class="col-auto">
+                            <input type="search" class="form-control" placeholder="Что вы ищете?"
+                                   aria-label="Поиск по сайту">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search me-1" aria-hidden="true"></i>
+                                Найти
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="row g-3 mb-5">
+                <div class="col-md-3 col-6">
+                    <a href="{% url 'home' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <i class="bi bi-house display-6 mb-2" aria-hidden="true"></i>
+                        <span>Главная</span>
+                    </a>
+                </div>
+                <div class="col-md-3 col-6">
+                    <a href="{% url 'programs' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <i class="bi bi-calendar-event display-6 mb-2" aria-hidden="true"></i>
+                        <span>Программы</span>
+                    </a>
+                </div>
+                <div class="col-md-3 col-6">
+                    <a href="{% url 'pricing' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <i class="bi bi-tags display-6 mb-2" aria-hidden="true"></i>
+                        <span>Цены</span>
+                    </a>
+                </div>
+                <div class="col-md-3 col-6">
+                    <a href="{% url 'contact' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <i class="bi bi-envelope display-6 mb-2" aria-hidden="true"></i>
+                        <span>Контакты</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main Actions -->
+            <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-house me-2" aria-hidden="true"></i>
+                    Вернуться на главную
+                </a>
+                <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-chat-dots me-2" aria-hidden="true"></i>
+                    Сообщить о проблеме
+                </a>
+            </div>
+            
+            <!-- Help Text -->
+            <div class="mt-5 p-3 bg-light rounded">
+                <h6 class="fw-bold mb-2">
+                    <i class="bi bi-lightbulb me-2 text-warning" aria-hidden="true"></i>
+                    Нужна помощь?
+                </h6>
+                <p class="text-muted small mb-2">
+                    Если вы не можете найти нужную информацию, свяжитесь с нами:
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                    <a href="tel:+74951234567" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-telephone me-1" aria-hidden="true"></i>
+                        +7 (495) 123-45-67
+                    </a>
+                    <a href="mailto:info@skyboundacademy.ru" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-envelope me-1" aria-hidden="true"></i>
+                        info@skyboundacademy.ru
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Error page functionality is handled by error-pages.js -->
+{% endblock %}

@@ -1,0 +1,638 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Программы обучения — Skybound Academy{% endblock %}
+{% block meta_description %}Программы обучения в Skybound Academy: тандем-прыжки, курсы AFF, обучение пилотированию, ознакомительные полёты. Выберите программу под ваш уровень подготовки.{% endblock %}
+{% block meta_keywords %}программы обучения, тандем прыжки, AFF курсы, обучение пилотированию, ознакомительные полёты, скайдайвинг{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="bg-light py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}" class="text-decoration-none">
+                    <i class="bi bi-house me-1" aria-hidden="true"></i>
+                    Главная
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Программы</li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Программы обучения - Skybound Academy",
+    "description": "Программы обучения парашютному спорту и пилотированию для всех уровней подготовки",
+    "url": "{{ request.build_absolute_uri }}",
+    "mainEntity": {
+        "@type": "ItemList",
+        "name": "Программы обучения",
+        "itemListElement": [
+            {% for product in products %}
+            {
+                "@type": "ListItem",
+                "position": {{ forloop.counter }},
+                "item": {
+                    "@type": "Service",
+                    "name": "{{ product.title }}",
+                    "description": "{{ product.get_short_description }}",
+                    "url": "{{ request.build_absolute_uri }}{% url 'product_detail' product.slug %}"
+                    {% if product.price %},
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "{{ product.price }}",
+                        "priceCurrency": "RUB"
+                    }
+                    {% endif %}
+                }
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-primary text-white" aria-label="Заголовок страницы">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Программы обучения</h1>
+                <p class="lead mb-4">
+                    Выберите программу, которая подходит именно вам.
+                    От первого тандем-прыжка до лицензии пилота — у нас есть решение для каждого
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                    <a href="#programs" class="btn btn-light btn-lg">
+                        <i class="bi bi-arrow-down me-2" aria-hidden="true"></i>
+                        Выбрать программу
+                    </a>
+                    <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-chat-dots me-2" aria-hidden="true"></i>
+                        Получить консультацию
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="py-4 bg-light" aria-label="Фильтры программ">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-primary active" data-filter="all" type="button">
+                        <i class="bi bi-grid me-1" aria-hidden="true"></i>
+                        Все программы
+                    </button>
+                    {% for category in categories %}
+                    <button class="btn btn-outline-primary" data-filter="{{ category.slug }}" type="button">
+                        <i class="bi bi-tag me-1" aria-hidden="true"></i>
+                        {{ category.name }}
+                    </button>
+                    {% endfor %}
+                    <button class="btn btn-outline-primary" data-filter="beginner" type="button">
+                        <i class="bi bi-circle me-1" aria-hidden="true"></i>
+                        Для начинающих
+                    </button>
+                    <button class="btn btn-outline-primary" data-filter="featured" type="button">
+                        <i class="bi bi-star me-1" aria-hidden="true"></i>
+                        Популярные
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="d-flex gap-2">
+                    <select class="form-select" id="sortSelect" aria-label="Сортировка программ">
+                        <option value="default">По умолчанию</option>
+                        <option value="price-asc">Цена: по возрастанию</option>
+                        <option value="price-desc">Цена: по убыванию</option>
+                        <option value="name">По названию</option>
+                        <option value="duration">По продолжительности</option>
+                    </select>
+                    <button class="btn btn-outline-secondary" id="viewToggle" data-view="grid" 
+                            aria-label="Переключить вид отображения">
+                        <i class="bi bi-list" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Programs Section -->
+<section class="py-5" id="programs" aria-label="Список программ">
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-5 d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+            <p class="mt-3 text-muted">Загружаем программы...</p>
+        </div>
+        
+        <!-- Programs Grid -->
+        <div id="programsGrid" class="row g-4">
+            {% for product in products %}
+            <div class="col-lg-4 col-md-6 program-item" 
+                 data-category="{% if product.category %}{{ product.category.slug }}{% endif %}"
+                 data-difficulty="{{ product.difficulty }}"
+                 data-featured="{% if product.is_featured %}true{% else %}false{% endif %}"
+                 data-price="{% if product.price %}{{ product.price }}{% else %}0{% endif %}"
+                 data-name="{{ product.title|lower }}"
+                 data-duration="{% if product.duration_hours %}{{ product.duration_hours }}{% else %}0{% endif %}">
+                
+                <div class="card h-100 shadow-sm border-0 program-card">
+                    <div class="position-relative overflow-hidden">
+                        <img src="{{ product.image_url }}"
+                             class="card-img-top img-card"
+                             alt="{{ product.title }}"
+                             loading="lazy">
+                        
+                        <!-- Badges -->
+                        <div class="position-absolute top-0 end-0 m-3">
+                            {% if product.is_featured %}
+                            <span class="badge bg-primary mb-2 d-block">
+                                <i class="bi bi-star-fill me-1" aria-hidden="true"></i>
+                                Популярно
+                            </span>
+                            {% endif %}
+                            {% if product.difficulty %}
+                            <span class="badge bg-secondary d-block">
+                                {% if product.difficulty == 'beginner' %}
+                                    <i class="bi bi-circle me-1" aria-hidden="true"></i>Начинающий
+                                {% elif product.difficulty == 'intermediate' %}
+                                    <i class="bi bi-circle-half me-1" aria-hidden="true"></i>Средний
+                                {% elif product.difficulty == 'advanced' %}
+                                    <i class="bi bi-circle-fill me-1" aria-hidden="true"></i>Продвинутый
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Quick Action Overlay -->
+                        <div class="position-absolute bottom-0 start-0 end-0 p-3 bg-gradient-dark d-none quick-actions">
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'product_detail' product.slug %}" 
+                                   class="btn btn-light btn-sm flex-grow-1">
+                                    <i class="bi bi-eye me-1" aria-hidden="true"></i>
+                                    Подробнее
+                                </a>
+                                <button class="btn btn-primary btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#quickBookModal"
+                                        data-product="{{ product.title }}"
+                                        data-price="{% if product.price %}{{ product.get_price_display }}{% else %}По запросу{% endif %}">
+                                    <i class="bi bi-calendar-plus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body d-flex flex-column">
+                        <!-- Category -->
+                        {% if product.category %}
+                        <div class="mb-2">
+                            <span class="badge bg-light text-dark">{{ product.category.name }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Title -->
+                        <h5 class="card-title fw-bold">
+                            <a href="{% url 'product_detail' product.slug %}" 
+                               class="text-decoration-none text-dark stretched-link">
+                                {{ product.title }}
+                            </a>
+                        </h5>
+                        
+                        <!-- Description -->
+                        <p class="card-text text-muted flex-grow-1">
+                            {{ product.get_short_description }}
+                        </p>
+                        
+                        <!-- Meta Info -->
+                        <div class="row g-2 mb-3 small text-muted">
+                            {% if product.duration_hours %}
+                            <div class="col-6">
+                                <i class="bi bi-clock me-1" aria-hidden="true"></i>
+                                {{ product.duration_hours }} ч.
+                            </div>
+                            {% endif %}
+                            <div class="col-6">
+                                <i class="bi bi-people me-1" aria-hidden="true"></i>
+                                Группа/Индивидуально
+                            </div>
+                        </div>
+                        
+                        <!-- Price and Action -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            {% if product.price %}
+                            <span class="h5 text-primary fw-bold mb-0">{{ product.get_price_display }}</span>
+                            {% else %}
+                            <span class="text-muted">Цена по запросу</span>
+                            {% endif %}
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-outline-primary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-title="Добавить в избранное">
+                                    <i class="bi bi-heart" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-title="Поделиться">
+                                    <i class="bi bi-share" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-search display-1 text-muted mb-3" aria-hidden="true"></i>
+                    <h3 class="text-muted">Программы не найдены</h3>
+                    <p class="text-muted">Попробуйте изменить фильтры или свяжитесь с нами для получения информации</p>
+                    <a href="{% url 'contact' %}" class="btn btn-primary">
+                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>
+                        Связаться с нами
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- No Results State -->
+        <div id="noResults" class="text-center py-5 d-none">
+            <i class="bi bi-funnel display-1 text-muted mb-3" aria-hidden="true"></i>
+            <h3 class="text-muted">Ничего не найдено</h3>
+            <p class="text-muted">Попробуйте изменить фильтры или сбросить их</p>
+            <button class="btn btn-outline-primary" onclick="resetFilters()">
+                <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>
+                Сбросить фильтры
+            </button>
+        </div>
+        
+        <!-- Pagination -->
+        {% if products.has_other_pages %}
+        <nav aria-label="Навигация по страницам" class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="Первая страница">
+                        <i class="bi bi-chevron-double-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Предыдущая страница">
+                        <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in products.paginator.page_range %}
+                {% if products.number == num %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                
+                {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Следующая страница">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.paginator.num_pages }}" aria-label="Последняя страница">
+                        <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-light" aria-label="Призыв к действию">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="h3 fw-bold mb-3">Не нашли подходящую программу?</h2>
+                <p class="text-muted mb-4">
+                    Наши специалисты помогут подобрать индивидуальную программу обучения
+                    с учетом вашего опыта, целей и физической подготовки
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                    <a href="{% url 'contact' %}" class="btn btn-primary">
+                        <i class="bi bi-person-check me-2" aria-hidden="true"></i>
+                        Индивидуальная консультация
+                    </a>
+                    <a href="tel:+74951234567" class="btn btn-outline-primary">
+                        <i class="bi bi-telephone me-2" aria-hidden="true"></i>
+                        Позвонить сейчас
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Book Modal -->
+<div class="modal fade" id="quickBookModal" tabindex="-1" aria-labelledby="quickBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickBookModalLabel">
+                    <i class="bi bi-calendar-plus me-2 text-primary" aria-hidden="true"></i>
+                    Быстрая запись
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                    <strong id="selectedProgram">Программа</strong><br>
+                    <span id="selectedPrice">Цена</span>
+                </div>
+                
+                <form id="quickBookForm" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="quickBookName" class="form-label">Имя *</label>
+                            <input type="text" class="form-control" id="quickBookName" required>
+                            <div class="invalid-feedback">Введите ваше имя</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="quickBookPhone" class="form-label">Телефон *</label>
+                            <input type="tel" class="form-control" id="quickBookPhone" required>
+                            <div class="invalid-feedback">Введите номер телефона</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="quickBookEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="quickBookEmail">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="quickBookDate" class="form-label">Предпочитаемая дата</label>
+                            <input type="date" class="form-control" id="quickBookDate" 
+                                   min="{{ "now"|date:"Y-m-d" }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="quickBookTime" class="form-label">Предпочитаемое время</label>
+                            <select class="form-select" id="quickBookTime">
+                                <option value="">Выберите время</option>
+                                <option value="morning">Утром (7:00-12:00)</option>
+                                <option value="afternoon">Днем (12:00-17:00)</option>
+                                <option value="evening">Вечером (17:00-22:00)</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="quickBookMessage" class="form-label">Комментарий</label>
+                            <textarea class="form-control" id="quickBookMessage" rows="3" 
+                                      placeholder="Расскажите о ваших целях или особых пожеланиях"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="quickBookAgree" required>
+                                <label class="form-check-label small" for="quickBookAgree">
+                                    Согласен на обработку персональных данных и получение информационных сообщений *
+                                </label>
+                                <div class="invalid-feedback">Необходимо согласие на обработку данных</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" form="quickBookForm" class="btn btn-primary">
+                    <i class="bi bi-send me-2" aria-hidden="true"></i>
+                    Отправить заявку
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Programs page functionality is handled by programs.js -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Filter functionality
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const programItems = document.querySelectorAll('.program-item');
+    const noResults = document.getElementById('noResults');
+    const programsGrid = document.getElementById('programsGrid');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter items
+            let visibleCount = 0;
+            programItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                const difficulty = item.getAttribute('data-difficulty');
+                const featured = item.getAttribute('data-featured');
+                
+                let show = false;
+                
+                if (filter === 'all') {
+                    show = true;
+                } else if (filter === 'beginner') {
+                    show = difficulty === 'beginner';
+                } else if (filter === 'featured') {
+                    show = featured === 'true';
+                } else {
+                    show = category === filter;
+                }
+                
+                if (show) {
+                    item.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    item.classList.add('d-none');
+                }
+            });
+            
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                noResults.classList.remove('d-none');
+                programsGrid.classList.add('d-none');
+            } else {
+                noResults.classList.add('d-none');
+                programsGrid.classList.remove('d-none');
+            }
+        });
+    });
+    
+    // Sort functionality
+    const sortSelect = document.getElementById('sortSelect');
+    sortSelect.addEventListener('change', function() {
+        const sortBy = this.value;
+        const container = document.getElementById('programsGrid');
+        const items = Array.from(container.children).filter(item => 
+            item.classList.contains('program-item')
+        );
+        
+        items.sort((a, b) => {
+            switch (sortBy) {
+                case 'price-asc':
+                    return parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price'));
+                case 'price-desc':
+                    return parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price'));
+                case 'name':
+                    return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
+                case 'duration':
+                    return parseFloat(b.getAttribute('data-duration')) - parseFloat(a.getAttribute('data-duration'));
+                default:
+                    return 0;
+            }
+        });
+        
+        items.forEach(item => container.appendChild(item));
+    });
+    
+    // View toggle
+    const viewToggle = document.getElementById('viewToggle');
+    viewToggle.addEventListener('click', function() {
+        const currentView = this.getAttribute('data-view');
+        const newView = currentView === 'grid' ? 'list' : 'grid';
+        
+        this.setAttribute('data-view', newView);
+        
+        if (newView === 'list') {
+            programsGrid.classList.add('list-view');
+            this.innerHTML = '<i class="bi bi-grid" aria-hidden="true"></i>';
+            programItems.forEach(item => {
+                item.className = 'col-12 program-item';
+            });
+        } else {
+            programsGrid.classList.remove('list-view');
+            this.innerHTML = '<i class="bi bi-list" aria-hidden="true"></i>';
+            programItems.forEach(item => {
+                item.className = 'col-lg-4 col-md-6 program-item';
+            });
+        }
+    });
+    
+    // Quick book modal
+    const quickBookModal = document.getElementById('quickBookModal');
+    quickBookModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const product = button.getAttribute('data-product');
+        const price = button.getAttribute('data-price');
+        
+        document.getElementById('selectedProgram').textContent = product;
+        document.getElementById('selectedPrice').textContent = price;
+    });
+    
+    // Quick book form
+    document.getElementById('quickBookForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (this.checkValidity()) {
+            // Handle form submission
+            alert('Спасибо! Мы свяжемся с вами в ближайшее время для подтверждения записи.');
+            bootstrap.Modal.getInstance(quickBookModal).hide();
+            this.reset();
+        }
+        this.classList.add('was-validated');
+    });
+    
+    // Favorites functionality
+    document.querySelectorAll('[data-bs-title="Добавить в избранное"]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('bi-heart')) {
+                icon.classList.remove('bi-heart');
+                icon.classList.add('bi-heart-fill');
+                this.classList.remove('btn-outline-primary');
+                this.classList.add('btn-primary');
+                this.setAttribute('data-bs-title', 'Удалить из избранного');
+            } else {
+                icon.classList.remove('bi-heart-fill');
+                icon.classList.add('bi-heart');
+                this.classList.remove('btn-primary');
+                this.classList.add('btn-outline-primary');
+                this.setAttribute('data-bs-title', 'Добавить в избранное');
+            }
+        });
+    });
+    
+    // Share functionality
+    document.querySelectorAll('[data-bs-title="Поделиться"]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (navigator.share) {
+                const card = this.closest('.card');
+                const title = card.querySelector('.card-title a').textContent;
+                const url = card.querySelector('.card-title a').href;
+                
+                navigator.share({
+                    title: title,
+                    url: url
+                });
+            } else {
+                // Fallback - copy to clipboard
+                const card = this.closest('.card');
+                const url = card.querySelector('.card-title a').href;
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Ссылка скопирована в буфер обмена');
+                });
+            }
+        });
+    });
+});
+
+// Reset filters function
+function resetFilters() {
+    document.querySelector('[data-filter="all"]').click();
+    document.getElementById('sortSelect').value = 'default';
+    document.getElementById('sortSelect').dispatchEvent(new Event('change'));
+}
+
+// Loading simulation
+function showLoading() {
+    document.getElementById('loadingState').classList.remove('d-none');
+    document.getElementById('programsGrid').classList.add('d-none');
+    
+    setTimeout(() => {
+        document.getElementById('loadingState').classList.add('d-none');
+        document.getElementById('programsGrid').classList.remove('d-none');
+    }, 1000);
+}
+</script>
+{% endblock %}

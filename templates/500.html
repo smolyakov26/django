@@ -1,0 +1,133 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Ошибка сервера — Skybound Academy{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold mb-3">Произошла ошибка</h1>
+            <p class="lead mb-4">Мы уже работаем над её устранением. Пожалуйста, попробуйте позже.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary btn-elevated">
+                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Внутренняя ошибка сервера — Skybound Academy{% endblock %}
+{% block meta_description %}Произошла внутренняя ошибка сервера. Мы работаем над устранением проблемы.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <div class="error-illustration mb-4">
+                <i class="bi bi-exclamation-triangle-fill display-1 text-danger" aria-hidden="true"></i>
+            </div>
+            
+            <h1 class="display-1 fw-bold text-danger mb-3">500</h1>
+            <h2 class="h3 fw-bold mb-4">Внутренняя ошибка сервера</h2>
+            
+            <div class="alert alert-danger d-inline-block mb-4">
+                <i class="bi bi-exclamation-circle me-2" aria-hidden="true"></i>
+                Произошла непредвиденная ошибка на сервере
+            </div>
+            
+            <p class="lead text-muted mb-5">
+                Наша команда уже уведомлена о проблеме и работает над её устранением.
+                Пожалуйста, попробуйте обновить страницу или вернитесь позже.
+            </p>
+            
+            <!-- Status Information -->
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-info-circle me-2 text-primary" aria-hidden="true"></i>
+                        Что можно сделать?
+                    </h5>
+                    <div class="row g-3 text-start">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-arrow-clockwise text-primary me-2 mt-1" aria-hidden="true"></i>
+                                <div>
+                                    <strong>Обновить страницу</strong><br>
+                                    <small class="text-muted">Возможно, это временная проблема</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-clock text-primary me-2 mt-1" aria-hidden="true"></i>
+                                <div>
+                                    <strong>Попробовать позже</strong><br>
+                                    <small class="text-muted">Мы работаем над устранением проблемы</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-house text-primary me-2 mt-1" aria-hidden="true"></i>
+                                <div>
+                                    <strong>Вернуться на главную</strong><br>
+                                    <small class="text-muted">Перейти к основному содержанию</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-telephone text-primary me-2 mt-1" aria-hidden="true"></i>
+                                <div>
+                                    <strong>Связаться с нами</strong><br>
+                                    <small class="text-muted">Сообщить о проблеме</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-4">
+                <button onclick="window.location.reload()" class="btn btn-primary btn-lg">
+                    <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>
+                    Обновить страницу
+                </button>
+                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-house me-2" aria-hidden="true"></i>
+                    Вернуться на главную
+                </a>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="mt-5 p-3 bg-light rounded">
+                <h6 class="fw-bold mb-2">
+                    <i class="bi bi-headset me-2 text-primary" aria-hidden="true"></i>
+                    Срочная помощь
+                </h6>
+                <p class="text-muted small mb-2">
+                    Если проблема критична, свяжитесь с нами напрямую:
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                    <a href="tel:+74951234567" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-telephone me-1" aria-hidden="true"></i>
+                        Позвонить: +7 (495) 123-45-67
+                    </a>
+                    <a href="https://wa.me/79123456789" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
+                        <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>
+                        WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Error page functionality is handled by error-pages.js -->
+{% endblock %}

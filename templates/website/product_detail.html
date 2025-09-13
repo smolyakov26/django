@@ -1,38 +1,717 @@
 {% extends "website/base.html" %}
+{% load static %}
 
 {% block title %}{{ product.meta_title|default:product.title }} — Skybound Academy{% endblock %}
-{% block meta_description %}{{ product.meta_description|default:product.description|truncatechars:160 }}{% endblock %}
+{% block meta_description %}{{ product.meta_description|default:product.get_short_description }}{% endblock %}
+{% block meta_keywords %}{{ product.keywords }}, скайдайвинг, парашютный спорт, skybound academy{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="bg-light py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}" class="text-decoration-none">
+                    <i class="bi bi-house me-1" aria-hidden="true"></i>
+                    Главная
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'programs' %}" class="text-decoration-none">Программы</a>
+            </li>
+            {% if product.category %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'programs' %}#{{ product.category.slug }}" class="text-decoration-none">
+                    {{ product.category.name }}
+                </a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "{{ product.title }}",
+    "description": "{{ product.description|truncatewords:30 }}",
+    "provider": {
+        "@type": "SportsActivityLocation",
+        "name": "Skybound Academy",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
+    },
+    "url": "{{ request.build_absolute_uri }}",
+    "image": "{{ product.image_url }}",
+    {% if product.price %}
+    "offers": {
+        "@type": "Offer",
+        "price": "{{ product.price }}",
+        "priceCurrency": "RUB",
+        "availability": "https://schema.org/InStock"
+    },
+    {% endif %}
+    "category": "{% if product.category %}{{ product.category.name }}{% else %}Авиационные услуги{% endif %}",
+    "serviceType": "{{ product.title }}",
+    {% if product.duration_hours %}
+    "duration": "PT{{ product.duration_hours }}H",
+    {% endif %}
+    "areaServed": {
+        "@type": "City",
+        "name": "Москва"
+    }
+}
+</script>
+{% endblock %}
 
 {% block content %}
-<section class="section">
-  <div class="container">
-    <div class="card card-simple">
-      <div class="row" style="gap:1.5rem;">
-        <div class="col-md-6">
-          {% if product.image_url %}
-            <img src="{{ product.image_url }}" alt="{{ product.title }}" style="width:100%; height:auto; border-radius:12px; display:block;">
-          {% else %}
-            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80" alt="{{ product.title }}" style="width:100%; height:auto; border-radius:12px; display:block;">
-          {% endif %}
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- Product Image -->
+        <div class="col-lg-6">
+            <div class="position-relative">
+                <img src="{{ product.image_url }}"
+                     alt="{{ product.title }}"
+                     class="img-fluid rounded shadow-lg w-100 img-product-detail">
+                
+                <!-- Badges -->
+                <div class="position-absolute top-0 end-0 m-3">
+                    {% if product.is_featured %}
+                    <span class="badge bg-primary mb-2 d-block">
+                        <i class="bi bi-star-fill me-1" aria-hidden="true"></i>
+                        Популярно
+                    </span>
+                    {% endif %}
+                    {% if product.difficulty %}
+                    <span class="badge bg-secondary d-block">
+                        {% if product.difficulty == 'beginner' %}
+                            <i class="bi bi-circle me-1" aria-hidden="true"></i>Начинающий
+                        {% elif product.difficulty == 'intermediate' %}
+                            <i class="bi bi-circle-half me-1" aria-hidden="true"></i>Средний
+                        {% elif product.difficulty == 'advanced' %}
+                            <i class="bi bi-circle-fill me-1" aria-hidden="true"></i>Продвинутый
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Additional Images Gallery (if available) -->
+            <div class="row g-2 mt-3">
+                <div class="col-4">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=300&q=80"
+                         alt="Дополнительное изображение 1"
+                         class="img-fluid rounded cursor-pointer gallery-thumb img-gallery-thumb">
+                </div>
+                <div class="col-4">
+                    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=300&q=80"
+                         alt="Дополнительное изображение 2"
+                         class="img-fluid rounded cursor-pointer gallery-thumb img-gallery-thumb">
+                </div>
+                <div class="col-4">
+                    <img src="https://images.unsplash.com/photo-1506629905607-d9b1e0b5b6e3?auto=format&fit=crop&w=300&q=80"
+                         alt="Дополнительное изображение 3"
+                         class="img-fluid rounded cursor-pointer gallery-thumb img-gallery-thumb">
+                </div>
+            </div>
         </div>
-
-        <div class="col-md-6">
-          <h1 style="margin-bottom:0.5rem;">{{ product.title }}</h1>
-          <p style="color: #334; margin-bottom:1rem;">{{ product.description }}</p>
-
-          <div style="margin-top:1.5rem;">
-            <a href="{{ product.button_link|default:request.path }}" class="btn btn-primary">{{ product.button_text|default:"Записаться" }}</a>
-            <a href="{% url 'home' %}" class="btn" style="margin-left:0.75rem; border:1px solid #ddd;">← Вернуться</a>
-          </div>
-
-          {% if product.keywords %}
-          <div style="margin-top:1rem; color:rgba(0,0,0,0.6); font-size:0.9rem;">
-            <strong>Ключевые слова:</strong> {{ product.keywords }}
-          </div>
-          {% endif %}
+        
+        <!-- Product Details -->
+        <div class="col-lg-6">
+            <div class="sticky-top sticky-product-details">
+                <!-- Category -->
+                {% if product.category %}
+                <div class="mb-2">
+                    <a href="{% url 'programs' %}#{{ product.category.slug }}" 
+                       class="badge bg-light text-dark text-decoration-none">
+                        {{ product.category.name }}
+                    </a>
+                </div>
+                {% endif %}
+                
+                <!-- Title -->
+                <h1 class="display-6 fw-bold mb-3">{{ product.title }}</h1>
+                
+                <!-- Price -->
+                <div class="mb-4">
+                    {% if product.price %}
+                    <span class="h2 text-primary fw-bold">{{ product.get_price_display }}</span>
+                    {% if product.duration_hours %}
+                    <span class="text-muted ms-2">/ {{ product.duration_hours }} час{% if product.duration_hours > 1 %}а{% endif %}</span>
+                    {% endif %}
+                    {% else %}
+                    <span class="h4 text-muted">Цена по запросу</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Quick Info -->
+                <div class="row g-3 mb-4">
+                    {% if product.duration_hours %}
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock text-primary me-2" aria-hidden="true"></i>
+                            <div>
+                                <small class="text-muted d-block">Продолжительность</small>
+                                <strong>{{ product.duration_hours }} час{% if product.duration_hours > 1 %}а{% endif %}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if product.difficulty %}
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-bar-chart text-primary me-2" aria-hidden="true"></i>
+                            <div>
+                                <small class="text-muted d-block">Уровень</small>
+                                <strong>
+                                    {% if product.difficulty == 'beginner' %}Начинающий
+                                    {% elif product.difficulty == 'intermediate' %}Средний
+                                    {% elif product.difficulty == 'advanced' %}Продвинутый
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if product.category %}
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-tag text-primary me-2" aria-hidden="true"></i>
+                            <div>
+                                <small class="text-muted d-block">Категория</small>
+                                <strong>{{ product.category.name }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-people text-primary me-2" aria-hidden="true"></i>
+                            <div>
+                                <small class="text-muted d-block">Формат</small>
+                                <strong>Групповые/Индивидуальные</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 mb-4">
+                    <a href="{{ product.button_link|default:'#' }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-calendar-plus me-2" aria-hidden="true"></i>
+                        {{ product.button_text }}
+                    </a>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#consultationModal">
+                        <i class="bi bi-chat-dots me-2" aria-hidden="true"></i>
+                        Бесплатная консультация
+                    </button>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="border rounded p-3 bg-light">
+                    <h6 class="fw-bold mb-2">
+                        <i class="bi bi-headset me-2 text-primary" aria-hidden="true"></i>
+                        Нужна помощь?
+                    </h6>
+                    <p class="mb-2 small">Наши консультанты ответят на все вопросы</p>
+                    <div class="d-flex gap-2">
+                        <a href="tel:+74951234567" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-telephone me-1" aria-hidden="true"></i>
+                            Позвонить
+                        </a>
+                        <a href="https://wa.me/79123456789" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
+                            <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>
+                            WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-</section>
+    
+    <!-- Product Description -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-description-tab" data-bs-toggle="tab" 
+                            data-bs-target="#nav-description" type="button" role="tab" 
+                            aria-controls="nav-description" aria-selected="true">
+                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                        Описание
+                    </button>
+                    <button class="nav-link" id="nav-program-tab" data-bs-toggle="tab" 
+                            data-bs-target="#nav-program" type="button" role="tab" 
+                            aria-controls="nav-program" aria-selected="false">
+                        <i class="bi bi-list-check me-2" aria-hidden="true"></i>
+                        Программа
+                    </button>
+                    <button class="nav-link" id="nav-requirements-tab" data-bs-toggle="tab" 
+                            data-bs-target="#nav-requirements" type="button" role="tab" 
+                            aria-controls="nav-requirements" aria-selected="false">
+                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                        Требования
+                    </button>
+                    <button class="nav-link" id="nav-reviews-tab" data-bs-toggle="tab" 
+                            data-bs-target="#nav-reviews" type="button" role="tab" 
+                            aria-controls="nav-reviews" aria-selected="false">
+                        <i class="bi bi-star me-2" aria-hidden="true"></i>
+                        Отзывы
+                    </button>
+                </div>
+            </nav>
+            
+            <div class="tab-content py-4" id="nav-tabContent">
+                <!-- Description Tab -->
+                <div class="tab-pane fade show active" id="nav-description" role="tabpanel" 
+                     aria-labelledby="nav-description-tab" tabindex="0">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="prose">
+                                {{ product.description|linebreaks }}
+                                
+                                <h4 class="mt-4 mb-3">Что вас ждет:</h4>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                                        Профессиональная подготовка с сертифицированными инструкторами
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                                        Современное оборудование и парашюты
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                                        Теоретическая подготовка и практические занятия
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                                        Сертификат по окончании курса
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                                        Поддержка и консультации после обучения
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title fw-bold">
+                                        <i class="bi bi-lightbulb text-warning me-2" aria-hidden="true"></i>
+                                        Полезно знать
+                                    </h6>
+                                    <ul class="list-unstyled small mb-0">
+                                        <li class="mb-2">• Рекомендуется приходить за 30 минут до начала</li>
+                                        <li class="mb-2">• Возьмите с собой удобную одежду для полётов</li>
+                                        <li class="mb-2">• Всё необходимое оборудование предоставляется</li>
+                                        <li class="mb-2">• Возможна отмена за 24 часа без штрафа</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Program Tab -->
+                <div class="tab-pane fade" id="nav-program" role="tabpanel" 
+                     aria-labelledby="nav-program-tab" tabindex="0">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h4 class="mb-4">Структура программы</h4>
+                            
+                            <div class="accordion" id="programAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            <i class="bi bi-play-circle me-2 text-primary" aria-hidden="true"></i>
+                                            Разминка (10-15 минут)
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse show" 
+                                         data-bs-parent="#programAccordion">
+                                        <div class="accordion-body">
+                                            Подготовка организма к нагрузке: суставная гимнастика, 
+                                            легкое кардио, динамическая растяжка.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                            <i class="bi bi-lightning me-2 text-primary" aria-hidden="true"></i>
+                                            Основная часть (40-50 минут)
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse" 
+                                         data-bs-parent="#programAccordion">
+                                        <div class="accordion-body">
+                                            Практические занятия на земле и в воздухе согласно программе обучения:
+                                            отработка техники прыжка, работа с парашютом, управление свободным падением.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                            <i class="bi bi-heart me-2 text-primary" aria-hidden="true"></i>
+                                            Заминка (10-15 минут)
+                                        </button>
+                                    </h2>
+                                    <div id="collapseThree" class="accordion-collapse collapse" 
+                                         data-bs-parent="#programAccordion">
+                                        <div class="accordion-body">
+                                            Восстановление: статическая растяжка, дыхательные упражнения, 
+                                            релаксация.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">
+                                        <i class="bi bi-calendar-week me-2" aria-hidden="true"></i>
+                                        Расписание
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <strong>Понедельник - Пятница:</strong><br>
+                                        <small class="text-muted">7:00, 9:00, 12:00, 18:00, 20:00</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Суббота - Воскресенье:</strong><br>
+                                        <small class="text-muted">9:00, 11:00, 14:00, 17:00</small>
+                                    </div>
+                                    <div class="alert alert-info small mb-0">
+                                        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                                        Возможна запись на индивидуальное время
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Requirements Tab -->
+                <div class="tab-pane fade" id="nav-requirements" role="tabpanel" 
+                     aria-labelledby="nav-requirements-tab" tabindex="0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h4 class="mb-4 text-success">
+                                <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                                Что нужно
+                            </h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item border-0 px-0">
+                                    <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                    Удобная одежда для полётов
+                                </li>
+                                <li class="list-group-item border-0 px-0">
+                                    <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                    Закрытая обувь
+                                </li>
+                                <li class="list-group-item border-0 px-0">
+                                    <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                    Желание покорить небо
+                                </li>
+                                <li class="list-group-item border-0 px-0">
+                                    <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                    Ответственное отношение к безопасности
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6">
+                            <h4 class="mb-4 text-warning">
+                                <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                                Противопоказания
+                            </h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item border-0 px-0">
+                                    <i class="bi bi-x text-danger me-2" aria-hidden="true"></i>
+                                    Острые заболевания
+                                </li>
+                                <li class="list-group-item border-0 px-0">
+                                    <i class="bi bi-x text-danger me-2" aria-hidden="true"></i>
+                                    Травмы опорно-двигательного аппарата
+                                </li>
+                                <li class="list-group-item border-0 px-0">
+                                    <i class="bi bi-x text-danger me-2" aria-hidden="true"></i>
+                                    Сердечно-сосудистые заболевания (без разрешения врача)
+                                </li>
+                                <li class="list-group-item border-0 px-0">
+                                    <i class="bi bi-x text-danger me-2" aria-hidden="true"></i>
+                                    Беременность (без консультации врача)
+                                </li>
+                            </ul>
+                            
+                            <div class="alert alert-warning mt-3">
+                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                                <strong>Важно:</strong> При наличии хронических заболеваний
+                                обязательна консультация с врачом перед началом обучения.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reviews Tab -->
+                <div class="tab-pane fade" id="nav-reviews" role="tabpanel" 
+                     aria-labelledby="nav-reviews-tab" tabindex="0">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="mb-0">Отзывы клиентов</h4>
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                    <i class="bi bi-plus me-1" aria-hidden="true"></i>
+                                    Оставить отзыв
+                                </button>
+                            </div>
+                            
+                            <!-- Review Item -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?auto=format&fit=crop&w=60&q=80" 
+                                             class="rounded-circle me-3" width="50" height="50" alt="Анна К." loading="lazy">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div>
+                                                    <h6 class="mb-0">Анна К.</h6>
+                                                    <small class="text-muted">2 недели назад</small>
+                                                </div>
+                                                <div class="text-warning">
+                                                    <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                                    <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                                    <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                                    <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                                    <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                            <p class="mb-0">
+                                                Отличная программа! Инструктор очень внимательный,
+                                                всегда следит за техникой. За месяц уже освоил свободное падение.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- More reviews... -->
+                            <div class="text-center">
+                                <button class="btn btn-outline-secondary" id="loadMoreReviews">
+                                    Показать еще отзывы
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h2 class="display-4 fw-bold text-primary mb-0">4.9</h2>
+                                    <div class="text-warning mb-2">
+                                        <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                        <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                        <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                        <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                        <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                    </div>
+                                    <p class="text-muted mb-0">На основе 127 отзывов</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-4">Похожие программы</h3>
+            <div class="row g-4">
+                {% for related_product in related_products %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="{{ related_product.image_url }}" class="card-img-top img-related"
+                             alt="{{ related_product.title }}" loading="lazy">
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">{{ related_product.title }}</h6>
+                            <p class="card-text text-muted small flex-grow-1">
+                                {{ related_product.get_short_description|truncatewords:15 }}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                {% if related_product.price %}
+                                <span class="fw-bold text-primary">{{ related_product.get_price_display }}</span>
+                                {% endif %}
+                                <a href="{% url 'product_detail' related_product.slug %}" class="btn btn-sm btn-outline-primary">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Consultation Modal -->
+<div class="modal fade" id="consultationModal" tabindex="-1" aria-labelledby="consultationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="consultationModalLabel">
+                    <i class="bi bi-chat-dots me-2 text-primary" aria-hidden="true"></i>
+                    Бесплатная консультация
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-4">
+                    Оставьте свои контакты, и наш специалист свяжется с вами в течение 15 минут
+                </p>
+                <form id="consultationForm" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="consultationName" class="form-label">Имя *</label>
+                        <input type="text" class="form-control" id="consultationName" required>
+                        <div class="invalid-feedback">Пожалуйста, введите ваше имя</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="consultationPhone" class="form-label">Телефон *</label>
+                        <input type="tel" class="form-control" id="consultationPhone" required>
+                        <div class="invalid-feedback">Пожалуйста, введите номер телефона</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="consultationMessage" class="form-label">Вопрос (необязательно)</label>
+                        <textarea class="form-control" id="consultationMessage" rows="3" 
+                                  placeholder="Расскажите о ваших целях или задайте вопрос"></textarea>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="consultationAgree" required>
+                        <label class="form-check-label small" for="consultationAgree">
+                            Согласен на обработку персональных данных *
+                        </label>
+                        <div class="invalid-feedback">Необходимо согласие на обработку данных</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" form="consultationForm" class="btn btn-primary">
+                    <i class="bi bi-send me-2" aria-hidden="true"></i>
+                    Отправить заявку
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">
+                    <i class="bi bi-star me-2 text-warning" aria-hidden="true"></i>
+                    Оставить отзыв
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="reviewName" class="form-label">Имя *</label>
+                        <input type="text" class="form-control" id="reviewName" required>
+                        <div class="invalid-feedback">Пожалуйста, введите ваше имя</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Оценка *</label>
+                        <div class="rating-input">
+                            <input type="radio" name="rating" value="5" id="star5" required>
+                            <label for="star5" class="star">★</label>
+                            <input type="radio" name="rating" value="4" id="star4">
+                            <label for="star4" class="star">★</label>
+                            <input type="radio" name="rating" value="3" id="star3">
+                            <label for="star3" class="star">★</label>
+                            <input type="radio" name="rating" value="2" id="star2">
+                            <label for="star2" class="star">★</label>
+                            <input type="radio" name="rating" value="1" id="star1">
+                            <label for="star1" class="star">★</label>
+                        </div>
+                        <div class="invalid-feedback">Пожалуйста, поставьте оценку</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewText" class="form-label">Отзыв *</label>
+                        <textarea class="form-control" id="reviewText" rows="4" required 
+                                  placeholder="Поделитесь своим опытом..."></textarea>
+                        <div class="invalid-feedback">Пожалуйста, напишите отзыв</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" form="reviewForm" class="btn btn-primary">
+                    <i class="bi bi-send me-2" aria-hidden="true"></i>
+                    Отправить отзыв
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<style>
+.gallery-thumb {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-thumb:hover {
+    opacity: 0.8;
+}
+
+.rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rating-input input {
+    display: none;
+}
+
+.rating-input label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.rating-input input:checked ~ label,
+.rating-input label:hover,
+.rating-input label:hover ~ label {
+    color: #ffc107;
+}
+</style>
+
+<!-- Gallery and product forms functionality is handled by gallery.js -->
 {% endblock %}

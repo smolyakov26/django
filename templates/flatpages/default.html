@@ -1,0 +1,25 @@
+{% extends "website/base.html" %}
+
+{% block title %}{{ flatpage.title }} — Skybound Academy{% endblock %}
+{% block meta_description %}{{ flatpage.content|striptags|truncatechars:160 }}{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="bg-light py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Главная</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ flatpage.title }}</li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-5 fw-bold mb-4">{{ flatpage.title }}</h1>
+    <div class="prose">
+        {{ flatpage.content|safe }}
+    </div>
+</div>
+{% endblock %}
+

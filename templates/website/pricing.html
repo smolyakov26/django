@@ -1,0 +1,730 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Цены на прыжки и обучение — Skybound Academy{% endblock %}
+{% block meta_description %}Цены на парашютные прыжки, курсы AFF, обучение пилотированию в Skybound Academy. Тандем, самостоятельные прыжки, ознакомительные полёты. Безопасно и выгодно.{% endblock %}
+{% block meta_keywords %}цены прыжков, тандем, AFF, обучение пилотированию, скайдайвинг, парашют, авиация{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="bg-light py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}" class="text-decoration-none">
+                    <i class="bi bi-house me-1" aria-hidden="true"></i>
+                    Главная
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Цены</li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Цены на прыжки и обучение - Skybound Academy",
+    "description": "Актуальные цены на парашютные прыжки и авиационную подготовку",
+    "url": "{{ request.build_absolute_uri }}",
+    "mainEntity": {
+        "@type": "PriceSpecification",
+        "name": "Парашютные услуги",
+        "priceCurrency": "RUB"
+    }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-primary text-white" aria-label="Заголовок страницы">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Цены на прыжки и обучение</h1>
+                <p class="lead mb-4">
+                    Прозрачные цены без скрытых доплат. Выберите пакет, 
+                    который подходит вашему уровню и бюджету
+                </p>
+                <div class="alert alert-light text-dark d-inline-block">
+                    <i class="bi bi-gift text-primary me-2" aria-hidden="true"></i>
+                    <strong>Специальное предложение:</strong> Скидка 10% на первый тандем-прыжок для новых клиентов!
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Toggle -->
+<section class="py-4 bg-light" aria-label="Переключатель пакетов">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <div class="btn-group" role="group" aria-label="Выбор типа пакета">
+                    <input type="radio" class="btn-check" name="pricingType" id="basic" checked>
+                    <label class="btn btn-outline-primary" for="basic">Новички</label>
+                    
+                    <input type="radio" class="btn-check" name="pricingType" id="advanced">
+                    <label class="btn btn-outline-primary" for="advanced">
+                        Продвинутые 
+                        <span class="badge bg-success ms-1">-15%</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Jump Packages -->
+<section class="py-5" id="packages" aria-label="Пакеты прыжков">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">Пакеты прыжков</h2>
+                <p class="lead text-muted">
+                    Выберите пакет, который подходит вашему опыту
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            <!-- Tandem Package -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-light text-center border-0 py-4">
+                        <h4 class="fw-bold mb-2">Тандем</h4>
+                        <p class="text-muted mb-0">Для новичков</p>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <span class="h1 fw-bold basic-price">15,000</span>
+                            <span class="h1 fw-bold advanced-price d-none">12,750</span>
+                            <span class="text-muted">₽/прыжок</span>
+                        </div>
+                        
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Прыжок с инструктором с 4000 м
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Полное обучение на земле
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Сертификат прыжка
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Видео/фото +5000 ₽
+                            </li>
+                            <li class="mb-2 text-muted">
+                                <i class="bi bi-x me-2" aria-hidden="true"></i>
+                                Самостоятельный прыжок
+                            </li>
+                            <li class="mb-2 text-muted">
+                                <i class="bi bi-x me-2" aria-hidden="true"></i>
+                                Аренда оборудования
+                            </li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <button class="btn btn-outline-primary" data-bs-toggle="modal" 
+                                    data-bs-target="#packageModal" data-package="tandem">
+                                Записаться
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AFF Package -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-primary shadow">
+                    <div class="card-header bg-primary text-white text-center border-0 py-4 position-relative">
+                        <span class="badge bg-warning text-dark position-absolute top-0 start-50 translate-middle px-3 py-2">
+                            <i class="bi bi-star-fill me-1" aria-hidden="true"></i>
+                            Популярно
+                        </span>
+                        <h4 class="fw-bold mb-2 mt-3">AFF Курс</h4>
+                        <p class="mb-0 opacity-75">Полное обучение</p>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <span class="h1 fw-bold basic-price">85,000</span>
+                            <span class="h1 fw-bold advanced-price d-none">72,250</span>
+                            <span class="text-muted">₽/курс (7 уровней)</span>
+                        </div>
+                        
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Все из пакета "Тандем"
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                7 прыжков с инструктором
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Теория и наземная подготовка
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Аренда парашютов
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Сертификат USPA A
+                            </li>
+                            <li class="mb-2 text-muted">
+                                <i class="bi bi-x me-2" aria-hidden="true"></i>
+                                Собственный парашют
+                            </li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <button class="btn btn-primary" data-bs-toggle="modal" 
+                                    data-bs-target="#packageModal" data-package="aff">
+                                Записаться на AFF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Flight Package -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-dark text-white text-center border-0 py-4">
+                        <h4 class="fw-bold mb-2">Полётное обучение</h4>
+                        <p class="mb-0 opacity-75">Для пилотов</p>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <span class="h1 fw-bold basic-price">45,000</span>
+                            <span class="h1 fw-bold advanced-price d-none">38,250</span>
+                            <span class="text-muted">₽/10 часов</span>
+                        </div>
+                        
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Все из пакета "AFF"
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                10 часов на Cessna 172
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Инструктор FAA CFI
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Теория пилотирования
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Логбук часов
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2" aria-hidden="true"></i>
+                                Экзамен PPL (доп.)
+                            </li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <button class="btn btn-dark" data-bs-toggle="modal" 
+                                    data-bs-target="#packageModal" data-package="flight">
+                                Записаться на полёт
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Individual Services -->
+<section class="py-5 bg-light" id="services" aria-label="Дополнительные услуги">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">Дополнительные услуги</h2>
+                <p class="lead text-muted">
+                    Видео, фото, аренда и другие опции
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in products %}
+            {% if product.price %}
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center mb-3 mb-md-0">
+                                <img src="{{ product.image_url }}"
+                                     alt="{{ product.title }}"
+                                     class="img-fluid rounded img-product"
+                                     loading="lazy">
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold mb-2">{{ product.title }}</h5>
+                                <p class="text-muted mb-2 small">{{ product.get_short_description }}</p>
+                                {% if product.duration_hours %}
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1" aria-hidden="true"></i>
+                                    {{ product.duration_hours }} мин
+                                </small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="h4 text-primary fw-bold mb-2">{{ product.get_price_display }}</div>
+                                <button class="btn btn-outline-primary btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#serviceModal"
+                                        data-service="{{ product.title }}"
+                                        data-price="{{ product.get_price_display }}"
+                                        data-slug="{{ product.slug }}">
+                                    <i class="bi bi-calendar-plus me-1" aria-hidden="true"></i>
+                                    Добавить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                    Дополнительные услуги в разработке. Свяжитесь с нами для информации.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Special Offers -->
+<section class="py-5" aria-label="Специальные предложения">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">Специальные предложения</h2>
+                <p class="lead text-muted">
+                    Акции и скидки для любителей неба
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Group Jump -->
+            <div class="col-lg-6">
+                <div class="card border-success h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people me-2" aria-hidden="true"></i>
+                            Групповой прыжок
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h4 text-success fw-bold">-20%</span>
+                            <span class="badge bg-success">От 4 человек</span>
+                        </div>
+                        <p class="card-text">
+                            Скидка 20% на тандем-прыжки для групп от 4 человек. 
+                            Идеально для дней рождения, корпоративов.
+                        </p>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#offerModal" data-offer="group">
+                            <i class="bi bi-people me-2" aria-hidden="true"></i>
+                            Забронировать группу
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- First Timer -->
+            <div class="col-lg-6">
+                <div class="card border-info h-100">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-star me-2" aria-hidden="true"></i>
+                            Первый прыжок
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h4 text-info fw-bold">+ видео бесплатно</span>
+                            <span class="badge bg-info">Новичкам</span>
+                        </div>
+                        <p class="card-text">
+                            Бесплатная съёмка первого тандем-прыжка (экономия 5000 ₽). 
+                            Запечатлите незабываемые моменты.
+                        </p>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#offerModal" data-offer="first">
+                            <i class="bi bi-camera-video me-2" aria-hidden="true"></i>
+                            Получить бонус
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Referral -->
+            <div class="col-lg-6">
+                <div class="card border-warning h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="bi bi-share me-2" aria-hidden="true"></i>
+                            Приведи друга
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h4 text-warning fw-bold">5000 ₽</span>
+                            <span class="badge bg-warning text-dark">За друга</span>
+                        </div>
+                        <p class="card-text">
+                            Приведи друга на тандем - получи 5000 ₽ скидки на следующий прыжок. 
+                            Для обоих!
+                        </p>
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#offerModal" data-offer="referral">
+                            <i class="bi bi-gift me-2" aria-hidden="true"></i>
+                            Участвовать
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weather Guarantee -->
+            <div class="col-lg-6">
+                <div class="card border-danger h-100">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-cloud-rain me-2" aria-hidden="true"></i>
+                            Гарантия погоды
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h4 text-danger fw-bold">100% возврат</span>
+                            <span class="badge bg-danger">При отмене</span>
+                        </div>
+                        <p class="card-text">
+                            Если погода не позволяет прыгнуть, полный возврат или перенос на другую дату. 
+                            Без вопросов.
+                        </p>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#offerModal" data-offer="weather">
+                            <i class="bi bi-shield-check me-2" aria-hidden="true"></i>
+                            Подробнее
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-light" aria-label="Вопросы о ценах">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">Вопросы о ценах</h2>
+                </div>
+                
+                <div class="accordion" id="pricingFaqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#pricingFaq1" aria-expanded="true" aria-controls="pricingFaq1">
+                                Как отменить бронирование?
+                            </button>
+                        </h2>
+                        <div id="pricingFaq1" class="accordion-collapse collapse show" data-bs-parent="#pricingFaqAccordion">
+                            <div class="accordion-body">
+                                Отмена возможна за 48 часов до прыжка без штрафа. В случае плохой погоды - полный возврат или перенос. 
+                                Меньше 48 часов - перенос на другую дату.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#pricingFaq2" aria-expanded="false" aria-controls="pricingFaq2">
+                                Есть ли возврат предоплаты?
+                            </button>
+                        </h2>
+                        <div id="pricingFaq2" class="accordion-collapse collapse" data-bs-parent="#pricingFaqAccordion">
+                            <div class="accordion-body">
+                                Возврат предоплаты возможен по погодным условиям или по медицинским показаниям. 
+                                Стандартный возврат - 50% при отмене за 24 часа.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#pricingFaq3" aria-expanded="false" aria-controls="pricingFaq3">
+                                Какие способы оплаты?
+                            </button>
+                        </h2>
+                        <div id="pricingFaq3" class="accordion-collapse collapse" data-bs-parent="#pricingFaqAccordion">
+                            <div class="accordion-body">
+                                Наличные, карты, СБП, переводы. Предоплата 50% для бронирования. 
+                                Возможна рассрочка на курсы AFF через партнёров.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#pricingFaq4" aria-expanded="false" aria-controls="pricingFaq4">
+                                Скидки суммируются?
+                            </button>
+                        </h2>
+                        <div id="pricingFaq4" class="accordion-collapse collapse" data-bs-parent="#pricingFaqAccordion">
+                            <div class="accordion-body">
+                                Скидки не суммируются. Максимальная скидка применяется. Акции имеют приоритет.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Package Modal -->
+<div class="modal fade" id="packageModal" tabindex="-1" aria-labelledby="packageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="packageModalLabel">
+                    <i class="bi bi-parachute me-2 text-primary" aria-hidden="true"></i>
+                    Бронирование пакета
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-primary" id="selectedPackageInfo">
+                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                    <strong id="packageName">Пакет</strong><br>
+                    <span id="packagePrice">Цена</span>
+                </div>
+                
+                <form id="packageForm" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="packageName" class="form-label">Имя *</label>
+                            <input type="text" class="form-control" id="packageName" required>
+                            <div class="invalid-feedback">Введите ваше имя</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="packageSurname" class="form-label">Фамилия *</label>
+                            <input type="text" class="form-control" id="packageSurname" required>
+                            <div class="invalid-feedback">Введите фамилию</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="packagePhone" class="form-label">Телефон *</label>
+                            <input type="tel" class="form-control" id="packagePhone" required>
+                            <div class="invalid-feedback">Введите телефон</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="packageEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="packageEmail" required>
+                            <div class="invalid-feedback">Введите email</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="packageWeight" class="form-label">Вес (кг) *</label>
+                            <input type="number" class="form-control" id="packageWeight" min="40" max="120" required>
+                            <div class="invalid-feedback">Вес 40-120 кг</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="packageDate" class="form-label">Желаемая дата</label>
+                            <input type="date" class="form-control" id="packageDate" 
+                                   min="{{ "now"|date:"Y-m-d" }}" value="{{ "now"|date:"Y-m-d" }}">
+                        </div>
+                        <div class="col-12">
+                            <label for="packageComments" class="form-label">Комментарии</label>
+                            <textarea class="form-control" id="packageComments" rows="3" 
+                                      placeholder="Особые пожелания, ограничения по здоровью"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="packageAgree" required>
+                                <label class="form-check-label small" for="packageAgree">
+                                    Согласен с <a href="/terms/" target="_blank">правилами</a> и <a href="/privacy/" target="_blank">политикой</a> *
+                                </label>
+                                <div class="invalid-feedback">Согласие обязательно</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" form="packageForm" class="btn btn-primary">
+                    <i class="bi bi-calendar-check me-2" aria-hidden="true"></i>
+                    Забронировать
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Service Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalLabel">
+                    <i class="bi bi-plus-circle me-2 text-primary" aria-hidden="true"></i>
+                    Добавить услугу
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info" id="selectedServiceInfo">
+                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                    <strong id="serviceName">Услуга</strong><br>
+                    <span id="servicePrice">Цена</span>
+                </div>
+                
+                <form id="serviceForm" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="serviceName" class="form-label">Имя *</label>
+                            <input type="text" class="form-control" id="serviceName" required>
+                            <div class="invalid-feedback">Имя обязательно</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="servicePhone" class="form-label">Телефон *</label>
+                            <input type="tel" class="form-control" id="servicePhone" required>
+                            <div class="invalid-feedback">Телефон обязателен</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="serviceEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="serviceEmail">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="serviceDate" class="form-label">Дата</label>
+                            <input type="date" class="form-control" id="serviceDate" 
+                                   min="{{ "now"|date:"Y-m-d" }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="serviceTime" class="form-label">Время</label>
+                            <select class="form-select" id="serviceTime">
+                                <option value="">Любое</option>
+                                <option value="morning">Утро</option>
+                                <option value="afternoon">День</option>
+                                <option value="evening">Вечер</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="serviceAgree" required>
+                                <label class="form-check-label small" for="serviceAgree">
+                                    Согласен на обработку данных *
+                                </label>
+                                <div class="invalid-feedback">Согласие обязательно</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" form="serviceForm" class="btn btn-primary">
+                    <i class="bi bi-send me-2" aria-hidden="true"></i>
+                    Добавить к заказу
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offer Modal -->
+<div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="offerModalLabel">
+                    <i class="bi bi-percent me-2 text-success" aria-hidden="true"></i>
+                    Специальное предложение
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div id="offerInfo" class="alert alert-success">
+                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                    <strong id="offerTitle">Предложение</strong><br>
+                    <span id="offerDescription">Описание</span>
+                </div>
+                
+                <form id="offerForm" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="offerName" class="form-label">Имя *</label>
+                            <input type="text" class="form-control" id="offerName" required>
+                            <div class="invalid-feedback">Имя</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="offerPhone" class="form-label">Телефон *</label>
+                            <input type="tel" class="form-control" id="offerPhone" required>
+                            <div class="invalid-feedback">Телефон</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="offerEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="offerEmail" required>
+                            <div class="invalid-feedback">Email</div>
+                        </div>
+                        <div class="col-12" id="groupFields" style="display: none;">
+                            <label for="offerGroupSize" class="form-label">Количество человек</label>
+                            <input type="number" class="form-control" id="offerGroupSize" min="2" max="20">
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="offerAgree" required>
+                                <label class="form-check-label small" for="offerAgree">
+                                    Согласен на обработку данных *
+                                </label>
+                                <div class="invalid-feedback">Согласие</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" form="offerForm" class="btn btn-success">
+                    <i class="bi bi-send me-2" aria-hidden="true"></i>
+                    Получить предложение
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Pricing functionality is handled by pricing.js -->
+{% endblock %}
